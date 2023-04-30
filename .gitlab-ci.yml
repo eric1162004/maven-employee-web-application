@@ -27,7 +27,7 @@ dockerize:
         - docker:dind
     stage: dockerize
     before_script:
-        - docker login -u $DOCKERHUBUSER -p DOCKERHUBPASSWORD
+        - docker login -u $DOCKERHUBUSER -p $DOCKERHUBPASSWORD
     script:
         - ls
         - docker build -t $DOCKERHUBUSER/test:2.0 . 
