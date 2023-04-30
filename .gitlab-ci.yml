@@ -1,0 +1,34 @@
+default:
+    image: maven:3.8.2-openjdk-11
+
+stages:
+ - check
+ - build 
+ - dockerize
+
+check-version:
+  stage: check
+  script: 
+      - mvn --version
+
+build-job:
+    stage: build
+    script:
+        - mvn package
+        - ls target/*.war
+    artifacts:
+        paths: 
+            - target/*.war
+        expire_in: 1 week
+
+dockerize:
+    image: docker:latest
+    services:
+        - docker:dind
+    stage: dockerize
+    before_script:
+        - docker login -u $DOCKERHUBUSER -p DOCKERHUBPASSWORD
+    script:
+        - ls
+        - docker build -t $DOCKERHUBUSER/test:2.0 . 
+        - docker push $DOCKERHUBUSER/test:2.0 
